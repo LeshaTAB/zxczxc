@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#100d19">
+
+<title>История — Моя копилка</title>
+
+<style>
+
+:root{
+--bg:#100d19;
+--p:#19142a;
+--p2:#241a3b;
+--v:#8b5cf6;
+--v2:#c084fc;
+--t:#f8f7ff;
+--m:#aaa3bd;
+--g:#42d392;
+--r:#ff6b81;
+}
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+background:
+radial-gradient(
+circle at 50% -10%,
+#38205d,
+#100d19 50%
+);
+color:var(--t);
+font-family:Arial,sans-serif;
+min-height:100vh;
+}
+
+.app{
+max-width:800px;
+margin:auto;
+padding:20px 16px 40px;
+}
+
+/* HEADER */
+
+header{
+display:flex;
+align-items:center;
+gap:14px;
+margin-bottom:25px;
+}
+
+.back{
+width:45px;
+height:45px;
+border:1px solid #a78bfa30;
+border-radius:14px;
+background:var(--p);
+color:#fff;
+font-size:21px;
+cursor:pointer;
+}
+
+.title{
+font-size:25px;
+font-weight:800;
+}
+
+.subtitle{
+color:var(--m);
+font-size:13px;
+margin-top:3px;
+}
+
+/* SUMMARY */
+
+.summary{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+margin-bottom:18px;
+}
+
+.box{
+background:var(--p);
+border:1px solid #a78bfa2e;
+border-radius:18px;
+padding:16px;
+}
+
+.box-title{
+color:var(--m);
+font-size:12px;
+}
+
+.box-value{
+font-size:20px;
+font-weight:800;
+margin-top:6px;
+}
+
+/* FILTER */
+
+.filters{
+display:flex;
+gap:8px;
+margin-bottom:15px;
+}
+
+.filter{
+flex:1;
+background:var(--p);
+border:1px solid #a78bfa30;
+color:var(--m);
+padding:11px;
+border-radius:13px;
+cursor:pointer;
+font-weight:700;
+}
+
+.filter.active{
+background:#30204e;
+color:#fff;
+border-color:#8b5cf6;
+}
+
+/* HISTORY */
+
+.history{
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.operation{
+background:var(--p);
+border:1px solid #a78bfa25;
+border-radius:18px;
+padding:16px;
+display:flex;
+align-items:center;
+gap:13px;
+}
+
+.icon{
+width:44px;
+height:44px;
+border-radius:14px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:21px;
+flex-shrink:0;
+}
+
+.icon.add{
+background:#17352d;
+}
+
+.icon.spend{
+background:#3c1d2b;
+}
+
+.info{
+flex:1;
+min-width:0;
+}
+
+.name{
+font-weight:800;
+font-size:15px;
+}
+
+.date{
+color:var(--m);
+font-size:12px;
+margin-top:5px;
+}
+
+.comment{
+color:#c7c0d5;
+font-size:12px;
+margin-top:5px;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+}
+
+.amount{
+font-weight:900;
+font-size:16px;
+white-space:nowrap;
+}
+
+.amount.add{
+color:var(--g);
+}
+
+.amount.spend{
+color:var(--r);
+}
+
+.delete{
+background:#2c1824;
+color:#ff8497;
+border:0;
+border-radius:11px;
+width:38px;
+height:38px;
+font-size:16px;
+cursor:pointer;
+}
+
+.delete:hover{
+background:#4a2030;
+}
+
+/* EMPTY */
+
+.empty{
+background:var(--p);
+border:1px solid #a78bfa25;
+border-radius:20px;
+padding:40px 20px;
+text-align:center;
+}
+
+.empty-icon{
+font-size:45px;
+margin-bottom:12px;
+}
+
+.empty-title{
+font-size:18px;
+font-weight:800;
+}
+
+.empty-text{
+color:var(--m);
+font-size:13px;
+margin-top:7px;
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+.summary{
+grid-template-columns:1fr;
+}
+
+.operation{
+padding:13px;
+}
+
+.amount{
+font-size:14px;
+}
+
+.delete{
+width:35px;
+height:35px;
+}
+
+.title{
+font-size:22px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+
+<button
+class="back"
+onclick="location.href='index.html'"
+>
+←
+</button>
+
+<div>
+
+<div class="title">
+📜 История
+</div>
+
+<div class="subtitle">
+Все операции твоей копилки
+</div>
+
+</div>
+
+</header>
+
+
+<!-- СТАТИСТИКА -->
+
+<div class="summary">
+
+<div class="box">
+
+<div class="box-title">
+ВСЕГО ВНЕСЕНО
+</div>
+
+<div
+class="box-value"
+id="totalIn"
+>
+0 ₽
+</div>
+
+</div>
+
+
+<div class="box">
+
+<div class="box-title">
+ВСЕГО СНЯТО
+</div>
+
+<div
+class="box-value"
+id="totalOut"
+>
+0 ₽
+</div>
+
+</div>
+
+
+<div class="box">
+
+<div class="box-title">
+ОПЕРАЦИЙ
+</div>
+
+<div
+class="box-value"
+id="totalOperations"
+>
+0
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ФИЛЬТРЫ -->
+
+<div class="filters">
+
+<button
+class="filter active"
+id="allFilter"
+onclick="setFilter('all')"
+>
+Все
+</button>
+
+<button
+class="filter"
+id="addFilter"
+onclick="setFilter('add')"
+>
+💰 Пополнения
+</button>
+
+<button
+class="filter"
+id="spendFilter"
+onclick="setFilter('spend')"
+>
+− Снятия
+</button>
+
+</div>
+
+
+<!-- ИСТОРИЯ -->
+
+<div
+class="history"
+id="historyList"
+>
+</div>
+
+</div>
+
+
+<script>
+
+const KEY='moja_kopilka_v1';
+
+let state=
+JSON.parse(
+localStorage.getItem(KEY)||'null'
+)
+||
+{
+name:'✈️ Калининград',
+goal:60000,
+endDate:'2026-12-05',
+transactions:[]
+};
+
+
+let currentFilter='all';
+
+
+function fmt(n){
+
+return new Intl.NumberFormat(
+'ru-RU'
+).format(
+Math.round(n)
+)+' ₽';
+
+}
+
+
+function esc(s){
+
+return String(s||'').replace(
+/[&<>"']/g,
+c=>({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#039;'
+}[c])
+);
+
+}
+
+
+function setFilter(filter){
+
+currentFilter=filter;
+
+
+document
+.getElementById('allFilter')
+.classList.toggle(
+'active',
+filter==='all'
+);
+
+document
+.getElementById('addFilter')
+.classList.toggle(
+'active',
+filter==='add'
+);
+
+document
+.getElementById('spendFilter')
+.classList.toggle(
+'active',
+filter==='spend'
+);
+
+
+render();
+
+}
+
+
+function deleteOperation(id){
+
+let operation=
+state.transactions.find(
+t=>t.id===id
+);
+
+if(!operation){
+return;
+}
+
+
+let text=
+operation.type==='add'
+?'пополнение'
+:'снятие';
+
+
+let ok=
+confirm(
+`Удалить ${text} на ${fmt(operation.amount)}?`
+);
+
+
+if(!ok){
+return;
+}
+
+
+state.transactions=
+state.transactions.filter(
+t=>t.id!==id
+);
+
+
+localStorage.setItem(
+KEY,
+JSON.stringify(state)
+);
+
+
+render();
+
+}
+
+
+function render(){
+
+let transactions=
+[...state.transactions]
+.sort(
+(a,b)=>b.id-a.id
+);
+
+
+let totalIn=
+state.transactions
+.filter(
+t=>t.type==='add'
+)
+.reduce(
+(s,t)=>s+t.amount,
+0
+);
+
+
+let totalOut=
+state.transactions
+.filter(
+t=>t.type==='spend'
+)
+.reduce(
+(s,t)=>s+t.amount,
+0
+);
+
+
+document
+.getElementById('totalIn')
+.textContent=
+fmt(totalIn);
+
+
+document
+.getElementById('totalOut')
+.textContent=
+fmt(totalOut);
+
+
+document
+.getElementById('totalOperations')
+.textContent=
+state.transactions.length;
+
+
+if(currentFilter!=='all'){
+
+transactions=
+transactions.filter(
+t=>t.type===currentFilter
+);
+
+}
+
+
+let list=
+document.getElementById(
+'historyList'
+);
+
+
+if(!transactions.length){
+
+list.innerHTML=`
+
+<div class="empty">
+
+<div class="empty-icon">
+📭
+</div>
+
+<div class="empty-title">
+Операций пока нет
+</div>
+
+<div class="empty-text">
+Добавленные пополнения и снятия появятся здесь.
+</div>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+list.innerHTML=
+transactions
+.map(t=>`
+
+<div class="operation">
+
+<div class="icon ${
+t.type==='add'
+?'add'
+:'spend'
+}">
+
+${
+t.type==='add'
+?'💰'
+:'−'
+}
+
+</div>
+
+
+<div class="info">
+
+<div class="name">
+
+${
+t.type==='add'
+?'Пополнение'
+:'Снятие'
+}
+
+</div>
+
+
+<div class="date">
+
+${esc(t.date)}
+
+</div>
+
+
+${
+t.comment
+?`
+<div class="comment">
+${esc(t.comment)}
+</div>
+`
+:''
+}
+
+
+</div>
+
+
+<div class="amount ${
+t.type==='add'
+?'add'
+:'spend'
+}">
+
+${
+t.type==='add'
+?'+'
+:'−'
+}${fmt(t.amount)}
+
+</div>
+
+
+<button
+class="delete"
+onclick="deleteOperation(${t.id})"
+title="Удалить"
+>
+🗑️
+</button>
+
+</div>
+
+`)
+.join('');
+
+}
+
+
+render();
+
+</script>
+
+</body>
+</html>
