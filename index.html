@@ -1,63 +1,1253 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#171326"><title>Моя копилка</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#171326">
+<title>Моя копилка</title>
+
 <style>
-:root{--bg:#100d19;--p:#19142a;--p2:#241a3b;--v:#8b5cf6;--v2:#c084fc;--t:#f8f7ff;--m:#aaa3bd;--g:#42d392;--r:#ff6b81}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -10%,#38205d,#100d19 45%);color:var(--t);font-family:Arial,sans-serif}
-.app{max-width:1100px;margin:auto;padding:22px 16px 100px}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
-.brand{font-size:22px;font-weight:800}.brand span{color:var(--v2)}button{border:0;border-radius:14px;padding:12px 17px;color:#fff;font-weight:700;cursor:pointer}
-.icon{background:var(--p);font-size:18px}.hero,.card{background:var(--p);border:1px solid #a78bfa2e;border-radius:24px}.hero{padding:28px;background:linear-gradient(145deg,#271946,#19142a)}
-.muted{color:var(--m);font-size:13px}.goal{font-size:25px;font-weight:800;margin:5px 0 22px}.big{font-size:48px;font-weight:900;margin:5px 0}
-.progress{height:14px;background:#302746;border-radius:99px;overflow:hidden;margin:20px 0 10px}.bar{height:100%;width:0;background:linear-gradient(90deg,#7c3aed,#c084fc);transition:.4s}
-.percent{color:var(--v2);font-weight:800}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.mini{background:#100c18aa;padding:15px;border-radius:16px}.mini b{display:block;font-size:19px;margin-top:5px}
-.actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}.primary{background:linear-gradient(135deg,#7c3aed,#9f67ff)}.danger{background:#432033;color:#ff9aaa}
-.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-top:16px}.card{padding:21px}.card h2{font-size:17px;margin:0 0 16px}
-.chart{height:180px;display:flex;align-items:end;gap:8px;border-bottom:1px solid #a78bfa22;padding:8px 3px}.column{flex:1;background:linear-gradient(#c084fc,#6d28d9);border-radius:7px 7px 0 0;min-height:4px}
-.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.dayname{text-align:center;color:var(--m);font-size:12px}.day{min-height:42px;background:var(--p2);border-radius:10px;padding:6px;font-size:11px}.active{outline:1px solid var(--v)}.saved{background:#17352d}.spent{background:#3c1d2b}
-.history{display:flex;flex-direction:column;gap:8px}.row{display:flex;justify-content:space-between;gap:10px;padding:12px;background:var(--p2);border-radius:13px}.plus{color:var(--g);font-weight:800}.minus{color:var(--r);font-weight:800}
-nav{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);display:flex;background:#19142af2;border:1px solid #a78bfa30;border-radius:19px;padding:7px;backdrop-filter:blur(12px);z-index:5}nav button{background:transparent;color:var(--m);font-size:12px;padding:9px 13px}nav button.active{background:#30204e;color:#fff}
-dialog{border:0;border-radius:20px;background:#1b152b;color:#fff;width:min(440px,calc(100% - 28px));padding:0;box-shadow:0 30px 100px #000}dialog::backdrop{background:#000a}.modal{padding:22px}.modal h2{margin-top:0}input{width:100%;padding:12px;border-radius:11px;border:1px solid #a78bfa30;background:#100d19;color:#fff;margin:7px 0 14px}.modal-actions{display:flex;gap:9px}.modal-actions button{flex:1}.secondary{background:#302746}
-@media(max-width:760px){.app{padding:15px 11px 90px}.hero{padding:21px}.big{font-size:38px}.stats{grid-template-columns:1fr}.grid{grid-template-columns:1fr}nav{width:calc(100% - 18px);justify-content:space-around}nav button{padding:9px 6px}}
-</style></head>
-<body>
-<div class="app">
-<header><div class="brand">💰 <span>Моя копилка</span></div><button class="icon" onclick="openSettings()">⚙️</button></header>
-<section class="hero">
-<div class="muted">ТЕКУЩАЯ ЦЕЛЬ</div><div class="goal" id="goalName">✈️ Калининград</div>
-<div class="muted">НАКОПЛЕНО</div><div class="big" id="balance">0 ₽</div>
-<div class="progress"><div class="bar" id="bar"></div></div><div><span class="percent" id="percent">0%</span> выполнено</div>
-<div class="stats"><div class="mini"><span class="muted">Осталось</span><b id="left">0 ₽</b></div><div class="mini"><span class="muted">До цели</span><b id="days">—</b></div><div class="mini"><span class="muted">Нужно в день</span><b id="perDay">0 ₽</b></div></div>
-<div class="actions"><button class="primary" onclick="openMoney('add')">＋ Добавить деньги</button><button class="danger" onclick="openMoney('spend')">− Снять деньги</button></div>
-</section>
-<div class="grid">
-<section class="card"><h2>📊 Статистика</h2><div class="stats" style="margin-top:0">
-<div class="mini"><span class="muted">Всего внесено</span><b id="totalIn">0 ₽</b></div><div class="mini"><span class="muted">Всего снято</span><b id="totalOut">0 ₽</b></div><div class="mini"><span class="muted">Средний взнос</span><b id="average">0 ₽</b></div></div>
-<h2 style="margin-top:22px">📈 Рост накоплений</h2><div class="chart" id="chart"></div></section>
-<section class="card"><h2>🗓️ Календарь</h2><div class="calendar" id="calendar"></div></section>
-</div>
-<section class="card" style="margin-top:16px"><h2>📜 Последние операции</h2><div class="history" id="history"><div class="muted">Пока операций нет.</div></div></section>
-</div>
-<nav><button class="active">🏠<br>Главная</button><button onclick="alert('Расширенную статистику добавим следующим этапом.')">📊<br>Статистика</button><button onclick="calendar.scrollIntoView({behavior:'smooth'})">🗓️<br>Календарь</button><button onclick="history.scrollIntoView({behavior:'smooth'})">📜<br>История</button><button onclick="openSettings()">🎯<br>Цель</button></nav>
-<dialog id="moneyDialog"><div class="modal"><h2 id="moneyTitle">Добавить деньги</h2><label>Сумма, ₽</label><input id="amount" type="number" min="1" placeholder="800"><label>Дата</label><input id="date" type="date"><label>Комментарий</label><input id="comment" placeholder="Например: накопление"><div class="modal-actions"><button class="secondary" onclick="moneyDialog.close()">Отмена</button><button class="primary" onclick="saveMoney()">Сохранить</button></div></div></dialog>
-<dialog id="settingsDialog"><div class="modal"><h2>⚙️ Настройки цели</h2><label>Название</label><input id="sName"><label>Сумма цели, ₽</label><input id="sGoal" type="number" min="1"><label>Дата окончания</label><input id="sDate" type="date"><div class="modal-actions"><button class="secondary" onclick="settingsDialog.close()">Отмена</button><button class="primary" onclick="saveSettings()">Сохранить</button></div></div></dialog>
-<script>
-const KEY='moja_kopilka_v1';let state=JSON.parse(localStorage.getItem(KEY)||'null')||{name:'✈️ Калининград',goal:60000,endDate:'2026-12-05',transactions:[]},mode='add';
-const fmt=n=>new Intl.NumberFormat('ru-RU').format(Math.round(n))+' ₽',today=()=>new Date().toISOString().slice(0,10);
-function bal(){return state.transactions.reduce((s,t)=>s+(t.type==='add'?t.amount:-t.amount),0)}
-function persist(){localStorage.setItem(KEY,JSON.stringify(state));render()}
-function openMoney(m){mode=m;moneyTitle.textContent=m==='add'?'Добавить деньги':'Снять деньги';amount.value='';date.value=today();comment.value='';moneyDialog.showModal()}
-function saveMoney(){let a=Number(amount.value);if(!a||a<1)return alert('Введите сумму.');if(mode==='spend'&&a>bal())return alert('Нельзя снять больше текущего баланса.');state.transactions.push({id:Date.now(),type:mode,amount:a,date:date.value||today(),comment:comment.value.trim()});moneyDialog.close();persist()}
-function openSettings(){sName.value=state.name;sGoal.value=state.goal;sDate.value=state.endDate;settingsDialog.showModal()}
-function saveSettings(){state.name=sName.value.trim()||'Моя копилка';state.goal=Number(sGoal.value)||60000;state.endDate=sDate.value||today();settingsDialog.close();persist()}
-function render(){
- let b=bal(),ins=state.transactions.filter(t=>t.type==='add').reduce((s,t)=>s+t.amount,0),outs=state.transactions.filter(t=>t.type==='spend').reduce((s,t)=>s+t.amount,0),adds=state.transactions.filter(t=>t.type==='add'),p=Math.max(0,Math.min(100,b/state.goal*100)),d=Math.ceil((new Date(state.endDate)-new Date(today()))/86400000),per=Math.max(0,Math.ceil((state.goal-b)/Math.max(1,d)));
- goalName.textContent=state.name;balance.textContent=fmt(b);left.textContent=fmt(Math.max(0,state.goal-b));percent.textContent=p.toFixed(1)+'%';bar.style.width=p+'%';days.textContent=d>=0?d+' дн.':'дата прошла';perDay.textContent=fmt(per);totalIn.textContent=fmt(ins);totalOut.textContent=fmt(outs);average.textContent=fmt(adds.length?ins/adds.length:0);renderHistory();renderCalendar();renderChart()
+:root{
+--bg:#100d19;
+--p:#19142a;
+--p2:#241a3b;
+--v:#8b5cf6;
+--v2:#c084fc;
+--t:#f8f7ff;
+--m:#aaa3bd;
+--g:#42d392;
+--r:#ff6b81
 }
-function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
-function renderHistory(){let a=[...state.transactions].sort((x,y)=>y.id-x.id).slice(0,8);history.innerHTML=a.length?a.map(t=>`<div class="row"><div><b>${t.type==='add'?'Пополнение':'Снятие'}</b><div class="muted">${t.date}${t.comment?' · '+esc(t.comment):''}</div></div><span class="${t.type==='add'?'plus':'minus'}">${t.type==='add'?'+':'−'}${fmt(t.amount)}</span></div>`).join(''):'<div class="muted">Пока операций нет.</div>'}
-function renderCalendar(){let d=new Date(),y=d.getFullYear(),m=d.getMonth(),first=new Date(y,m,1).getDay()||7,n=new Date(y,m+1,0).getDate(),s=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(x=>`<div class="dayname">${x}</div>`).join('');for(let i=1;i<first;i++)s+='<div></div>';for(let i=1;i<=n;i++){let ds=`${y}-${String(m+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`,ts=state.transactions.filter(t=>t.date===ds),c='day '+(ds===today()?'active ':'')+(ts.some(t=>t.type==='add')?'saved ':'')+(ts.some(t=>t.type==='spend')?'spent':'');s+=`<div class="${c}"><b>${i}</b>${ts.length?'<br>💰 '+ts.reduce((x,t)=>x+(t.type==='add'?t.amount:-t.amount),0):''}</div>`}calendar.innerHTML=s}
-function renderChart(){let a=[...state.transactions].filter(t=>t.type==='add').sort((x,y)=>x.date.localeCompare(y.date)),r=0,v=a.map(t=>r+=t.amount).slice(-12);if(!v.length)v=[0];let mx=Math.max(...v,1);chart.innerHTML=v.map(x=>`<div class="column" title="${fmt(x)}" style="height:${Math.max(3,x/mx*100)}%"></div>`).join('')}
+
+*{box-sizing:border-box}
+
+body{
+margin:0;
+background:radial-gradient(circle at 50% -10%,#38205d,#100d19 45%);
+color:var(--t);
+font-family:Arial,sans-serif
+}
+
+.app{
+max-width:1100px;
+margin:auto;
+padding:22px 16px 100px
+}
+
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px
+}
+
+.brand{
+font-size:22px;
+font-weight:800
+}
+
+.brand span{
+color:var(--v2)
+}
+
+button{
+border:0;
+border-radius:14px;
+padding:12px 17px;
+color:#fff;
+font-weight:700;
+cursor:pointer
+}
+
+.icon{
+background:var(--p);
+font-size:18px
+}
+
+.hero,.card{
+background:var(--p);
+border:1px solid #a78bfa2e;
+border-radius:24px
+}
+
+.hero{
+padding:28px;
+background:linear-gradient(145deg,#271946,#19142a)
+}
+
+.muted{
+color:var(--m);
+font-size:13px
+}
+
+.goal{
+font-size:25px;
+font-weight:800;
+margin:5px 0 22px
+}
+
+.big{
+font-size:48px;
+font-weight:900;
+margin:5px 0
+}
+
+.progress{
+height:14px;
+background:#302746;
+border-radius:99px;
+overflow:hidden;
+margin:20px 0 10px
+}
+
+.bar{
+height:100%;
+width:0;
+background:linear-gradient(90deg,#7c3aed,#c084fc);
+transition:.4s
+}
+
+.percent{
+color:var(--v2);
+font-weight:800
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+margin-top:18px
+}
+
+.mini{
+background:#100c18aa;
+padding:15px;
+border-radius:16px
+}
+
+.mini b{
+display:block;
+font-size:19px;
+margin-top:5px
+}
+
+.actions{
+display:flex;
+gap:10px;
+margin-top:20px;
+flex-wrap:wrap
+}
+
+.primary{
+background:linear-gradient(135deg,#7c3aed,#9f67ff)
+}
+
+.danger{
+background:#432033;
+color:#ff9aaa
+}
+
+.grid{
+display:grid;
+grid-template-columns:1.2fr .8fr;
+gap:16px;
+margin-top:16px
+}
+
+.card{
+padding:21px
+}
+
+.card h2{
+font-size:17px;
+margin:0 0 16px
+}
+
+.chart{
+height:180px;
+display:flex;
+align-items:end;
+gap:8px;
+border-bottom:1px solid #a78bfa22;
+padding:8px 3px
+}
+
+.column{
+flex:1;
+background:linear-gradient(#c084fc,#6d28d9);
+border-radius:7px 7px 0 0;
+min-height:4px
+}
+
+.calendar{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+gap:6px
+}
+
+.dayname{
+text-align:center;
+color:var(--m);
+font-size:12px
+}
+
+.day{
+min-height:42px;
+background:var(--p2);
+border-radius:10px;
+padding:6px;
+font-size:11px
+}
+
+.active{
+outline:1px solid var(--v)
+}
+
+.saved{
+background:#17352d
+}
+
+.spent{
+background:#3c1d2b
+}
+
+.history{
+display:flex;
+flex-direction:column;
+gap:8px
+}
+
+.row{
+display:flex;
+justify-content:space-between;
+gap:10px;
+padding:12px;
+background:var(--p2);
+border-radius:13px
+}
+
+.plus{
+color:var(--g);
+font-weight:800
+}
+
+.minus{
+color:var(--r);
+font-weight:800
+}
+
+nav{
+position:fixed;
+bottom:12px;
+left:50%;
+transform:translateX(-50%);
+display:flex;
+background:#19142af2;
+border:1px solid #a78bfa30;
+border-radius:19px;
+padding:7px;
+backdrop-filter:blur(12px);
+z-index:5
+}
+
+nav button{
+background:transparent;
+color:var(--m);
+font-size:12px;
+padding:9px 13px
+}
+
+nav button.active{
+background:#30204e;
+color:#fff
+}
+
+dialog{
+border:0;
+border-radius:20px;
+background:#1b152b;
+color:#fff;
+width:min(520px,calc(100% - 28px));
+padding:0;
+box-shadow:0 30px 100px #000
+}
+
+dialog::backdrop{
+background:#000a
+}
+
+.modal{
+padding:22px
+}
+
+.modal h2{
+margin-top:0
+}
+
+input{
+width:100%;
+padding:12px;
+border-radius:11px;
+border:1px solid #a78bfa30;
+background:#100d19;
+color:#fff;
+margin:7px 0 14px
+}
+
+.modal-actions{
+display:flex;
+gap:9px
+}
+
+.modal-actions button{
+flex:1
+}
+
+.secondary{
+background:#302746
+}
+
+.stat-big{
+font-size:28px;
+font-weight:900;
+margin-top:5px
+}
+
+.stat-box{
+background:#241a3b;
+padding:16px;
+border-radius:16px;
+margin-bottom:10px
+}
+
+.stat-label{
+color:var(--m);
+font-size:13px
+}
+
+.stat-progress{
+height:10px;
+background:#302746;
+border-radius:20px;
+overflow:hidden;
+margin-top:9px
+}
+
+.stat-progress div{
+height:100%;
+background:linear-gradient(90deg,#7c3aed,#c084fc)
+}
+
+@media(max-width:760px){
+
+.app{
+padding:15px 11px 90px
+}
+
+.hero{
+padding:21px
+}
+
+.big{
+font-size:38px
+}
+
+.stats{
+grid-template-columns:1fr
+}
+
+.grid{
+grid-template-columns:1fr
+}
+
+nav{
+width:calc(100% - 18px);
+justify-content:space-around
+}
+
+nav button{
+padding:9px 6px
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+<div class="brand">💰 <span>Моя копилка</span></div>
+<button class="icon" onclick="openSettings()">⚙️</button>
+</header>
+
+<section class="hero">
+
+<div class="muted">ТЕКУЩАЯ ЦЕЛЬ</div>
+
+<div class="goal" id="goalName">
+✈️ Калининград
+</div>
+
+<div class="muted">НАКОПЛЕНО</div>
+
+<div class="big" id="balance">
+0 ₽
+</div>
+
+<div class="progress">
+<div class="bar" id="bar"></div>
+</div>
+
+<div>
+<span class="percent" id="percent">0%</span> выполнено
+</div>
+
+<div class="stats">
+
+<div class="mini">
+<span class="muted">Осталось</span>
+<b id="left">0 ₽</b>
+</div>
+
+<div class="mini">
+<span class="muted">До цели</span>
+<b id="days">—</b>
+</div>
+
+<div class="mini">
+<span class="muted">Нужно в день</span>
+<b id="perDay">0 ₽</b>
+</div>
+
+</div>
+
+<div class="actions">
+
+<button class="primary" onclick="openMoney('add')">
+＋ Добавить деньги
+</button>
+
+<button class="danger" onclick="openMoney('spend')">
+− Снять деньги
+</button>
+
+</div>
+
+</section>
+
+
+<div class="grid">
+
+<section class="card">
+
+<h2>📊 Статистика</h2>
+
+<div class="stats" style="margin-top:0">
+
+<div class="mini">
+<span class="muted">Всего внесено</span>
+<b id="totalIn">0 ₽</b>
+</div>
+
+<div class="mini">
+<span class="muted">Всего снято</span>
+<b id="totalOut">0 ₽</b>
+</div>
+
+<div class="mini">
+<span class="muted">Средний взнос</span>
+<b id="average">0 ₽</b>
+</div>
+
+</div>
+
+<h2 style="margin-top:22px">
+📈 Рост накоплений
+</h2>
+
+<div class="chart" id="chart"></div>
+
+</section>
+
+
+<section class="card">
+
+<h2>🗓️ Календарь</h2>
+
+<div class="calendar" id="calendar"></div>
+
+</section>
+
+</div>
+
+
+<section class="card" style="margin-top:16px">
+
+<h2>📜 Последние операции</h2>
+
+<div class="history" id="history">
+
+<div class="muted">
+Пока операций нет.
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+
+<nav>
+
+<button class="active">
+🏠<br>Главная
+</button>
+
+<button onclick="openStats()">
+📊<br>Статистика
+</button>
+
+<button onclick="calendar.scrollIntoView({behavior:'smooth'})">
+🗓️<br>Календарь
+</button>
+
+<button onclick="history.scrollIntoView({behavior:'smooth'})">
+📜<br>История
+</button>
+
+<button onclick="openSettings()">
+🎯<br>Цель
+</button>
+
+</nav>
+
+
+<!-- ДОБАВЛЕНИЕ ДЕНЕГ -->
+
+<dialog id="moneyDialog">
+
+<div class="modal">
+
+<h2 id="moneyTitle">
+Добавить деньги
+</h2>
+
+<label>
+Сумма, ₽
+</label>
+
+<input
+id="amount"
+type="number"
+min="1"
+placeholder="800"
+>
+
+<label>
+Дата
+</label>
+
+<input
+id="date"
+type="date"
+>
+
+<label>
+Комментарий
+</label>
+
+<input
+id="comment"
+placeholder="Например: накопление"
+>
+
+<div class="modal-actions">
+
+<button
+class="secondary"
+onclick="moneyDialog.close()"
+>
+Отмена
+</button>
+
+<button
+class="primary"
+onclick="saveMoney()"
+>
+Сохранить
+</button>
+
+</div>
+
+</div>
+
+</dialog>
+
+
+<!-- НАСТРОЙКИ -->
+
+<dialog id="settingsDialog">
+
+<div class="modal">
+
+<h2>
+⚙️ Настройки цели
+</h2>
+
+<label>
+Название
+</label>
+
+<input id="sName">
+
+<label>
+Сумма цели, ₽
+</label>
+
+<input
+id="sGoal"
+type="number"
+min="1"
+>
+
+<label>
+Дата окончания
+</label>
+
+<input
+id="sDate"
+type="date"
+>
+
+<div class="modal-actions">
+
+<button
+class="secondary"
+onclick="settingsDialog.close()"
+>
+Отмена
+</button>
+
+<button
+class="primary"
+onclick="saveSettings()"
+>
+Сохранить
+</button>
+
+</div>
+
+</div>
+
+</dialog>
+
+
+<!-- СТАТИСТИКА -->
+
+<dialog id="statsDialog">
+
+<div class="modal">
+
+<h2>
+📊 Подробная статистика
+</h2>
+
+<div class="stat-box">
+<div class="stat-label">
+Текущий баланс
+</div>
+<div class="stat-big" id="statBalance">
+0 ₽
+</div>
+</div>
+
+<div class="stat-box">
+<div class="stat-label">
+Цель
+</div>
+<div class="stat-big" id="statGoal">
+0 ₽
+</div>
+</div>
+
+<div class="stat-box">
+<div class="stat-label">
+Выполнено
+</div>
+<div class="stat-big" id="statPercent">
+0%
+</div>
+
+<div class="stat-progress">
+<div id="statBar" style="width:0%"></div>
+</div>
+
+</div>
+
+<div class="stat-box">
+<div class="stat-label">
+Всего внесено
+</div>
+<div class="stat-big" id="statIn">
+0 ₽
+</div>
+</div>
+
+<div class="stat-box">
+<div class="stat-label">
+Всего снято
+</div>
+<div class="stat-big" id="statOut">
+0 ₽
+</div>
+</div>
+
+<div class="stat-box">
+<div class="stat-label">
+Количество пополнений
+</div>
+<div class="stat-big" id="statCount">
+0
+</div>
+</div>
+
+<div class="stat-box">
+<div class="stat-label">
+Средний взнос
+</div>
+<div class="stat-big" id="statAverage">
+0 ₽
+</div>
+</div>
+
+<div class="stat-box">
+<div class="stat-label">
+Осталось накопить
+</div>
+<div class="stat-big" id="statLeft">
+0 ₽
+</div>
+</div>
+
+<div class="modal-actions">
+
+<button
+class="primary"
+onclick="statsDialog.close()"
+>
+Закрыть
+</button>
+
+</div>
+
+</div>
+
+</dialog>
+
+
+<script>
+
+const KEY='moja_kopilka_v1';
+
+let state=JSON.parse(
+localStorage.getItem(KEY)||'null'
+)||{
+name:'✈️ Калининград',
+goal:60000,
+endDate:'2026-12-05',
+transactions:[]
+};
+
+let mode='add';
+
+
+const fmt=n=>
+new Intl.NumberFormat('ru-RU')
+.format(Math.round(n))+' ₽';
+
+
+const today=()=>
+new Date().toISOString().slice(0,10);
+
+
+function bal(){
+
+return state.transactions.reduce(
+(s,t)=>
+s+(t.type==='add'?t.amount:-t.amount),
+0
+);
+
+}
+
+
+function persist(){
+
+localStorage.setItem(
+KEY,
+JSON.stringify(state)
+);
+
 render();
-</script></body></html>
+
+}
+
+
+function openMoney(m){
+
+mode=m;
+
+moneyTitle.textContent=
+m==='add'
+?'Добавить деньги'
+:'Снять деньги';
+
+amount.value='';
+
+date.value=today();
+
+comment.value='';
+
+moneyDialog.showModal();
+
+}
+
+
+function saveMoney(){
+
+let a=Number(amount.value);
+
+if(!a||a<1){
+
+return alert('Введите сумму.');
+
+}
+
+if(mode==='spend'&&a>bal()){
+
+return alert(
+'Нельзя снять больше текущего баланса.'
+);
+
+}
+
+state.transactions.push({
+
+id:Date.now(),
+
+type:mode,
+
+amount:a,
+
+date:date.value||today(),
+
+comment:comment.value.trim()
+
+});
+
+moneyDialog.close();
+
+persist();
+
+}
+
+
+function openSettings(){
+
+sName.value=state.name;
+
+sGoal.value=state.goal;
+
+sDate.value=state.endDate;
+
+settingsDialog.showModal();
+
+}
+
+
+function saveSettings(){
+
+state.name=
+sName.value.trim()||
+'Моя копилка';
+
+state.goal=
+Number(sGoal.value)||
+60000;
+
+state.endDate=
+sDate.value||
+today();
+
+settingsDialog.close();
+
+persist();
+
+}
+
+
+/* ПОДРОБНАЯ СТАТИСТИКА */
+
+function openStats(){
+
+let b=bal();
+
+let ins=
+state.transactions
+.filter(t=>t.type==='add')
+.reduce((s,t)=>s+t.amount,0);
+
+let outs=
+state.transactions
+.filter(t=>t.type==='spend')
+.reduce((s,t)=>s+t.amount,0);
+
+let adds=
+state.transactions
+.filter(t=>t.type==='add');
+
+let p=
+Math.max(
+0,
+Math.min(
+100,
+b/state.goal*100
+)
+);
+
+document.getElementById('statBalance').textContent=
+fmt(b);
+
+document.getElementById('statGoal').textContent=
+fmt(state.goal);
+
+document.getElementById('statPercent').textContent=
+p.toFixed(1)+'%';
+
+document.getElementById('statBar').style.width=
+p+'%';
+
+document.getElementById('statIn').textContent=
+fmt(ins);
+
+document.getElementById('statOut').textContent=
+fmt(outs);
+
+document.getElementById('statCount').textContent=
+adds.length;
+
+document.getElementById('statAverage').textContent=
+fmt(adds.length?ins/adds.length:0);
+
+document.getElementById('statLeft').textContent=
+fmt(Math.max(0,state.goal-b));
+
+statsDialog.showModal();
+
+}
+
+
+function render(){
+
+let b=bal();
+
+let ins=
+state.transactions
+.filter(t=>t.type==='add')
+.reduce((s,t)=>s+t.amount,0);
+
+let outs=
+state.transactions
+.filter(t=>t.type==='spend')
+.reduce((s,t)=>s+t.amount,0);
+
+let adds=
+state.transactions
+.filter(t=>t.type==='add');
+
+let p=
+Math.max(
+0,
+Math.min(
+100,
+b/state.goal*100
+)
+);
+
+let d=
+Math.ceil(
+(
+new Date(state.endDate)-
+new Date(today())
+)/86400000
+);
+
+let per=
+Math.max(
+0,
+Math.ceil(
+(state.goal-b)/
+Math.max(1,d)
+)
+);
+
+
+goalName.textContent=
+state.name;
+
+balance.textContent=
+fmt(b);
+
+left.textContent=
+fmt(
+Math.max(
+0,
+state.goal-b
+)
+);
+
+percent.textContent=
+p.toFixed(1)+'%';
+
+bar.style.width=
+p+'%';
+
+days.textContent=
+d>=0
+?d+' дн.'
+:'дата прошла';
+
+perDay.textContent=
+fmt(per);
+
+totalIn.textContent=
+fmt(ins);
+
+totalOut.textContent=
+fmt(outs);
+
+average.textContent=
+fmt(
+adds.length
+?ins/adds.length
+:0
+);
+
+renderHistory();
+
+renderCalendar();
+
+renderChart();
+
+}
+
+
+function esc(s){
+
+return s.replace(
+/[&<>"']/g,
+c=>({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#039;'
+}[c])
+);
+
+}
+
+
+function renderHistory(){
+
+let a=
+[...state.transactions]
+.sort((x,y)=>y.id-x.id)
+.slice(0,8);
+
+history.innerHTML=
+a.length
+?
+a.map(t=>`
+
+<div class="row">
+
+<div>
+
+<b>
+${t.type==='add'
+?'Пополнение'
+:'Снятие'}
+</b>
+
+<div class="muted">
+${t.date}
+${t.comment
+?' · '+esc(t.comment)
+:''}
+</div>
+
+</div>
+
+<span class="${
+t.type==='add'
+?'plus'
+:'minus'
+}">
+
+${t.type==='add'
+?'+'
+:'−'
+}${fmt(t.amount)}
+
+</span>
+
+</div>
+
+`).join('')
+
+:
+'<div class="muted">Пока операций нет.</div>';
+
+}
+
+
+function renderCalendar(){
+
+let d=new Date();
+
+let y=d.getFullYear();
+
+let m=d.getMonth();
+
+let first=
+new Date(y,m,1).getDay()||7;
+
+let n=
+new Date(y,m+1,0).getDate();
+
+let s=
+[
+'Пн',
+'Вт',
+'Ср',
+'Чт',
+'Пт',
+'Сб',
+'Вс'
+]
+.map(
+x=>`<div class="dayname">${x}</div>`
+)
+.join('');
+
+for(
+let i=1;
+i<first;
+i++
+){
+
+s+='<div></div>';
+
+}
+
+for(
+let i=1;
+i<=n;
+i++
+){
+
+let ds=
+`${y}-${String(m+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+
+let ts=
+state.transactions.filter(
+t=>t.date===ds
+);
+
+let c=
+'day '+
+(ds===today()?'active ':'')+
+(ts.some(t=>t.type==='add')
+?'saved ':'')+
+(ts.some(t=>t.type==='spend')
+?'spent':'');
+
+s+=`
+
+<div class="${c}">
+
+<b>${i}</b>
+
+${ts.length
+?'<br>💰 '+
+ts.reduce(
+(x,t)=>
+x+(t.type==='add'
+?t.amount
+:-t.amount),
+0
+)
+:''}
+
+</div>
+
+`;
+
+}
+
+calendar.innerHTML=s;
+
+}
+
+
+function renderChart(){
+
+let a=
+[...state.transactions]
+.filter(t=>t.type==='add')
+.sort((x,y)=>
+x.date.localeCompare(y.date)
+);
+
+let r=0;
+
+let v=
+a.map(
+t=>r+=t.amount
+).slice(-12);
+
+if(!v.length)
+v=[0];
+
+let mx=
+Math.max(...v,1);
+
+chart.innerHTML=
+v.map(
+x=>`
+
+<div
+class="column"
+title="${fmt(x)}"
+style="height:${Math.max(
+3,
+x/mx*100
+)}%"
+></div>
+
+`
+).join('');
+
+}
+
+
+render();
+
+</script>
+
+</body>
+</html>
